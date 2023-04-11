@@ -5,10 +5,8 @@ import json
 pdf_file = open('input.pdf', 'rb')
 pdf_reader = PyPDF2.PdfReader(pdf_file)
 
-pd = "jf"
-pd.find()
-# Extract text from pages 13-15
-pages = pdf_reader.pages[25:50]
+# Extract text from pages
+pages = pdf_reader.pages[55:70]
 text = ""
 for page in pages:
     text += page.extract_text()
@@ -22,15 +20,17 @@ for match in matches:
     # Split the match into question number, language, and content
     # q_num, question, options = re.findall(r'(\d+)\.\s+(.*?(?<!\n))(?:\n(?!\Z))?((?:.+\n)*)', match)[0]
     result = re.findall(r'(\d+)\.\s+([^:]+):\s*\n*\s*((?:.+\n*)*)', match)
+    
     if not result:
         continue
     q_num, question, options = result[0]
     # Split the content into options'\s*\(?\w\)\s(.+?)(?=\n\(?\w\)|\Z|\n\w\))'
-    option_list = re.findall(r'\s*\(?\b\w\)?\s(.+?)\s*(?=\n\(?\w\)|\Z)', options, flags=re.DOTALL)
+    option_list = re.findall(r'\s*(?P<label>\(?\b\w\)?\s*)\s*(?P<text>.+?)\s*(?=\n\s*\(?\w\)|\Z)', options, flags=re.DOTALL)
     options_dict = []
-    for i, option in enumerate(option_list):
-        option = option.replace('\n', '').replace('\x00', 'ti')
-        option_dict = {'id': i+1, 'text': option, 'isCorrect': False}
+    for i, option_match in enumerate(option_list):
+        option = option_match[1].replace('\n', '').replace('\x00', 'ti')
+        is_correct = option_match[0].startswith('(')
+        option_dict = {'id': i+1, 'text': option, 'isCorrect': is_correct}
         options_dict.append(option_dict)
 
     # Initialize the question if it doesn't exist yet
