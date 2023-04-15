@@ -19,10 +19,10 @@ questions = questions_ref.stream()
 for doc in questions:
     doc_dict = doc.to_dict()
     for lang in doc_dict:
-        if 'option' in doc_dict[lang]:
+        if isinstance(doc_dict[lang], dict) and 'option' in doc_dict[lang]:
             doc_dict[lang]['options'] = doc_dict[lang].pop('option')
             doc_ref = questions_ref.document(doc.id)
             doc_ref.set(doc_dict)
-            print('updated document', doc.id)
+            print('Updated document: {}'.format(doc.id))
 
 print('Done updating documents')
