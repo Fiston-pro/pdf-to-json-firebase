@@ -23,6 +23,7 @@ for doc in docs:
     for lang_key in lang_keys:
         if 'options' in doc_dict[lang_key]:
             option_ids = set()
+            num_correct_options = 0
             for option in doc_dict[lang_key]['options']:
                 option_id = option.get('id')
                 if option_id is None:
@@ -32,6 +33,13 @@ for doc in docs:
                     print(f"Duplicate option id {option_id} in {lang_key} in {doc.id}")
                     continue
                 option_ids.add(option_id)
+                
+                is_correct = option.get('isCorrect', False)
+                if is_correct:
+                    num_correct_options += 1
+            
+            if num_correct_options != 1:
+                print(f"Invalid number of correct options ({num_correct_options}) in {doc.id} - {lang_key}")
     
     # Check if options have incremental ids from 1 to 4
     for lang_key in lang_keys:
@@ -51,7 +59,5 @@ for doc in docs:
             for option in lang_dict['options']:
                 if 'text' not in option:
                     print(f"Missing option text field in {doc.id} - {lang_key}")
-                if 'isCorrect' not in option:
-                    print(f"Missing option isCorrect field in {doc.id} - {lang_key}")
         else:
             print(f"Missing options field in {doc.id} - {lang_key}")
