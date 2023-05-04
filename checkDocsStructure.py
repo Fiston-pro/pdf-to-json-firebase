@@ -61,3 +61,23 @@ for doc in docs:
                     print(f"Missing option text field in {doc.id} - {lang_key}")
         else:
             print(f"Missing options field in {doc.id} - {lang_key}")
+
+    # check if all correct ids are the same in all languages
+    correct_ids = ""
+    for lang_key in lang_keys:
+        if 'options' in doc_dict[lang_key]:
+            for option in doc_dict[lang_key]['options']:
+                if option['isCorrect'] and (correct_ids == "" or correct_ids == str(option['id'])):
+                    correct_ids = str(option['id'])
+                elif option['isCorrect']:
+                    print(f"Correct ids are not the same in all languages in {doc.id}")
+                    break
+        else:
+            print(f"Missing options field in {doc.id} - {lang_key}")
+
+    for lang_key in lang_keys:
+        text = "Uburebure bw'ibinyabiziga"
+        if text in doc_dict[lang_key]['question']:
+            print(f"Found {doc.id} - {lang_key}")
+            print(doc_dict[lang_key]['question'])
+    

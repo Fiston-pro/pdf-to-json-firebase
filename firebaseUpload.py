@@ -23,7 +23,7 @@ for key, value in data.items():
     # Upload the question data to Firestore
     doc_ref.set({
         'id': key,
-        'image':"",
+        'image':value['image'],
         "kinyarwanda":value['kinyarwanda'],
         "english":value['english'],
         "french":value['french'],
